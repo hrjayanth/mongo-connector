@@ -11,13 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.jay.annotations.Collection;
-import com.jay.exception.MongoAdapterException;
+import com.jay.exception.MongoConnectorException;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 @Repository
-public abstract class MongoDao<T> {
+public abstract class GenericMongoDao<T> {
 	private Class<T> persistentClass;
 
 	private MongoDatabase mongoDatabase;
@@ -27,12 +27,14 @@ public abstract class MongoDao<T> {
 	@Autowired
 	MongoClient mongoClient;
 
+	@SuppressWarnings("unchecked")
 	@PostConstruct
-	public void setContext() throws MongoAdapterException {
-		this.persistentClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass())
-				.getActualTypeArguments()[0];
+	public void prepareConnection() throws MongoConnectorException {
+		ParameterizedType parameterizedType = (ParameterizedType) getClass().getAnnotatedSuperclass();
+		this.persistentClass = (Class<T>) parameterizedType.getActualTypeArguments()[0];
+
 		if (!this.persistentClass.isAnnotationPresent(com.jay.annotations.Collection.class)) {
-			throw new MongoAdapterException("This is not a collection");
+			throw new MongoConnectorException("This is not a collection");
 		}
 
 		Collection collection = this.persistentClass.getAnnotation(Collection.class);

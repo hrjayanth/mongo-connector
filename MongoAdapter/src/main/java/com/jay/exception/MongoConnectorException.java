@@ -1,8 +1,8 @@
 package com.jay.exception;
 
-public class MongoAdapterException extends Exception {
+public class MongoConnectorException extends Exception {
 
-	public MongoAdapterException(String message) {
+	public MongoConnectorException(String message) {
 		super(message);
 	}
 
