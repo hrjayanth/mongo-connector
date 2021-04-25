@@ -21,3 +21,11 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+MongoAdapter/target/classes/META-INF/maven/com.jay/MongoAdapter/pom.properties
+MongoAdapter/target/classes/META-INF/MANIFEST.MF
+MongoAdapter/.settings/org.eclipse.m2e.core.prefs
+MongoAdapter/.settings/org.eclipse.jdt.core.prefs
+MongoAdapter/.project
+MongoAdapter/.classpath
+.settings/org.eclipse.m2e.core.prefs
+.project
