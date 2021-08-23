@@ -1,13 +1,14 @@
 package com.jay.config;
 
-import com.mongodb.client.MongoDatabase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.jay.utils.MongoConstants;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoDatabase;
 
 @Configuration
 public class MongoConfig {
@@ -16,7 +17,6 @@ public class MongoConfig {
     public static final String HOSTNAME = "localhost";
     public static final String AUTH_DATABASE = "admin";
     public static final Integer PORT = 27017;
-    public static final String DATABASE = "";
 
     @Bean(destroyMethod = "close")
     public MongoClient getMongoClient() {
@@ -28,8 +28,8 @@ public class MongoConfig {
         return mongoClient;
     }
 
-    @Bean(name = DATABASE)
+    @Bean(name = MongoConstants.MYDATABASE)
     public MongoDatabase mongoDatabase() {
-        return getMongoClient().getDatabase(DATABASE);
+        return getMongoClient().getDatabase(MongoConstants.MYDATABASE);
     }
 }

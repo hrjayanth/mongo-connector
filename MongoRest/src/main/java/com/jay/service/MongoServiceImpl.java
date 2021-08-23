@@ -19,7 +19,7 @@ public class MongoServiceImpl implements MongoService {
 		e.setName("Name");
 		e.setId(123456789L);
 		
-		empDao.insertEmployee(e);
+		empDao.insert(e);
 		return "success";
 	}
 }

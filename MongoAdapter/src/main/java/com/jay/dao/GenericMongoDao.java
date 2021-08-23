@@ -1,71 +1,82 @@
 package com.jay.dao;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.Map;
 
-import javax.annotation.PostConstruct;
+import org.bson.types.ObjectId;
 
-import org.bson.Document;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import com.jay.annotations.Collection;
-import com.jay.exception.MongoConnectorException;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-
-@Repository
-public abstract class GenericMongoDao<T> {
-	private Class<T> persistentClass;
-
-	private MongoDatabase mongoDatabase;
-
-	private MongoCollection<Document> mongoCollection;
-
-	@Autowired
-	MongoClient mongoClient;
-
-	@SuppressWarnings("unchecked")
-	@PostConstruct
-	public void prepareConnection() throws MongoConnectorException {
-		ParameterizedType parameterizedType = (ParameterizedType) getClass().getAnnotatedSuperclass();
-		this.persistentClass = (Class<T>) parameterizedType.getActualTypeArguments()[0];
-
-		if (!this.persistentClass.isAnnotationPresent(com.jay.annotations.Collection.class)) {
-			throw new MongoConnectorException("This is not a collection");
-		}
-
-		Collection collection = this.persistentClass.getAnnotation(Collection.class);
-		mongoDatabase = mongoClient.getDatabase(collection.database());
-		mongoCollection = mongoDatabase.getCollection(collection.name());
-	}
+public interface GenericMongoDao<T> {
 
 	/**
 	 * Inserts one document into the database
 	 * 
 	 * @param t
+	 * @return
 	 */
-	public void insert(T t) {
-		JSONObject jsonObj = new JSONObject(t);
-		mongoCollection.insertOne(Document.parse(jsonObj.toString()));
-	}
+	public ObjectId insert(T t);
 
 	/**
 	 * Inserts many document into the database
 	 * 
 	 * @param t
+	 * @return
 	 */
-	public void insert(List<T> t) {
+	public List<ObjectId> insert(List<T> objList);
 
-	}
+	/**
+	 * Returns true, if the documents exists which satisfies the filter criteria
+	 * 
+	 * @param filter
+	 * @return
+	 */
+	public boolean exist(ObjectId id);
 
-	public void delete(Integer id) {
+	/**
+	 * Returns true, if the documents exists which satisfies the filter criteria
+	 * 
+	 * @param filter
+	 * @return
+	 */
+	public boolean exist(Map<String, Object> filter);
 
-	}
+	/**
+	 * Retrieves the first field based on the filter criteria sorted in the
+	 * ascending order of Object ID
+	 * 
+	 * @param filter
+	 * @return
+	 */
+	public T findOne(Map<String, Object> filter);
 
-	public T find() {
-		return null;
-	}
+	/**
+	 * Retrieves all records which satisfies the filter criteria
+	 * 
+	 * @param filter
+	 * @return List of entities
+	 */
+	public List<T> find(Map<String, Object> filter);
+
+	/**
+	 * Retrieves the record based on the Object ID
+	 * 
+	 * @param id
+	 * @return if found, returns entity else null
+	 */
+	public T find(ObjectId id);
+
+	/**
+	 * Deletes multiple records which satisfies the filter criteria
+	 * 
+	 * @param filter
+	 * @return count of records deleted
+	 */
+	public Long delete(Map<String, Object> filter);
+
+	/**
+	 * Deletes the record based on the Object ID
+	 * 
+	 * @param id
+	 * @return true if the record is successfully deleted
+	 */
+	public boolean delete(ObjectId id);
 }
