@@ -1,5 +1,6 @@
 package com.jay.config;
 
+import com.mongodb.client.MongoDatabase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,19 +11,25 @@ import com.mongodb.ServerAddress;
 
 @Configuration
 public class MongoConfig {
-	public static final String USERNAME = "myUserAdmin";
-	public static final String PASSWORD = "admin";
-	public static final String HOSTNAME = "localhost";
-	public static final String AUTH_DATABASE = "admin";
-	public static final Integer PORT = 27017;
+    public static final String USERNAME = "myUserAdmin";
+    public static final String PASSWORD = "admin";
+    public static final String HOSTNAME = "localhost";
+    public static final String AUTH_DATABASE = "admin";
+    public static final Integer PORT = 27017;
+    public static final String DATABASE = "";
 
-	@Bean
-	public MongoClient getMongoClient() {
-		MongoClientOptions options = MongoClientOptions.builder().connectionsPerHost(10).socketTimeout(10000)
-				.maxWaitTime(10000).connectTimeout(10000).build();
-		MongoCredential credential = MongoCredential.createCredential(USERNAME, AUTH_DATABASE, PASSWORD.toCharArray());
-		MongoClient mongoClient = new MongoClient(new ServerAddress(HOSTNAME, PORT), credential, options);
+    @Bean(destroyMethod = "close")
+    public MongoClient getMongoClient() {
+        MongoClientOptions options = MongoClientOptions.builder().connectionsPerHost(10).socketTimeout(10000)
+                .maxWaitTime(10000).connectTimeout(10000).build();
+        MongoCredential credential = MongoCredential.createCredential(USERNAME, AUTH_DATABASE, PASSWORD.toCharArray());
+        MongoClient mongoClient = new MongoClient(new ServerAddress(HOSTNAME, PORT), credential, options);
 
-		return mongoClient;
-	}
+        return mongoClient;
+    }
+
+    @Bean(name = DATABASE)
+    public MongoDatabase mongoDatabase() {
+        return getMongoClient().getDatabase(DATABASE);
+    }
 }
