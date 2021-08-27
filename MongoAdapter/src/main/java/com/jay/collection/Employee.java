@@ -1,12 +1,29 @@
 package com.jay.collection;
 
-import com.jay.annotations.Collection;
+import java.util.List;
 
-@Collection(name = "Employee", database = "Organization")
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.jay.annotations.Collection;
+import com.jay.utils.MongoConstants;
+
+@Collection(name = "Employee", database = MongoConstants.ORGANIZATION)
 public class Employee {
+	@JsonProperty("_id")
+	private Object _id;
+
 	private String name;
-	private Long id;
+
 	private String dept;
+
+	private String empId;
+
+	@JsonUnwrapped
+	private List<Address> addresses;
+
+	@JsonIgnore
+	private List<Project> projects;
 
 	public String getName() {
 		return name;
@@ -16,12 +33,12 @@ public class Employee {
 		this.name = name;
 	}
 
-	public Long getId() {
-		return id;
+	public Object get_id() {
+		return _id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void set_id(Object _id) {
+		this._id = _id;
 	}
 
 	public String getDept() {
@@ -30,6 +47,30 @@ public class Employee {
 
 	public void setDept(String dept) {
 		this.dept = dept;
+	}
+
+	public String getEmpId() {
+		return empId;
+	}
+
+	public void setEmpId(String empId) {
+		this.empId = empId;
+	}
+
+	public List<Address> getAddresses() {
+		return addresses;
+	}
+
+	public void setAddresses(List<Address> addresses) {
+		this.addresses = addresses;
+	}
+
+	public List<Project> getProjects() {
+		return projects;
+	}
+
+	public void setProjects(List<Project> projects) {
+		this.projects = projects;
 	}
 
 }

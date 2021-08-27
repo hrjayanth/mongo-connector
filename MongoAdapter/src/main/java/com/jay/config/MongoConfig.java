@@ -12,24 +12,24 @@ import com.mongodb.client.MongoDatabase;
 
 @Configuration
 public class MongoConfig {
-    public static final String USERNAME = "myUserAdmin";
-    public static final String PASSWORD = "admin";
-    public static final String HOSTNAME = "localhost";
-    public static final String AUTH_DATABASE = "admin";
-    public static final Integer PORT = 27017;
+	public static final String USERNAME = "root";
+	public static final String PASSWORD = "password";
+	public static final String HOSTNAME = "localhost";
+	public static final String AUTH_DATABASE = "admin";
+	public static final Integer PORT = 27017;
 
-    @Bean(destroyMethod = "close")
-    public MongoClient getMongoClient() {
-        MongoClientOptions options = MongoClientOptions.builder().connectionsPerHost(10).socketTimeout(10000)
-                .maxWaitTime(10000).connectTimeout(10000).build();
-        MongoCredential credential = MongoCredential.createCredential(USERNAME, AUTH_DATABASE, PASSWORD.toCharArray());
-        MongoClient mongoClient = new MongoClient(new ServerAddress(HOSTNAME, PORT), credential, options);
+	@Bean(destroyMethod = "close")
+	public MongoClient getMongoClient() {
+		MongoClientOptions options = MongoClientOptions.builder().connectionsPerHost(10).socketTimeout(10000)
+				.maxWaitTime(10000).connectTimeout(10000).build();
+		MongoCredential credential = MongoCredential.createCredential(USERNAME, AUTH_DATABASE, PASSWORD.toCharArray());
+		MongoClient mongoClient = new MongoClient(new ServerAddress(HOSTNAME, PORT), credential, options);
 
-        return mongoClient;
-    }
+		return mongoClient;
+	}
 
-    @Bean(name = MongoConstants.MYDATABASE)
-    public MongoDatabase mongoDatabase() {
-        return getMongoClient().getDatabase(MongoConstants.MYDATABASE);
-    }
+	@Bean(name = MongoConstants.ORGANIZATION)
+	public MongoDatabase mongoDatabase() {
+		return getMongoClient().getDatabase(MongoConstants.ORGANIZATION);
+	}
 }

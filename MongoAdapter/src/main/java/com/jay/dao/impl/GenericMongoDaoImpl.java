@@ -1,5 +1,6 @@
 package com.jay.dao.impl;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,12 +33,29 @@ public abstract class GenericMongoDaoImpl<T> implements GenericMongoDao<T> {
 	private Class<T> persistentClass;
 
 	@Autowired
-	@Qualifier(MongoConstants.MYDATABASE)
+	@Qualifier(MongoConstants.ORGANIZATION)
 	protected MongoDatabase myDatabase;
 
 	protected MongoDatabase database;
 
 	private MongoCollection<Document> mongoCollection;
+
+	@SuppressWarnings("unchecked")
+	public GenericMongoDaoImpl() {
+		if (this.persistentClass == null) {
+			ParameterizedType parameterizedType = (ParameterizedType) (this.getClass().getGenericSuperclass());
+
+//			ParameterizedType parameterizedType = (ParameterizedType) declaredClass.getGenericSuperclass();
+//		    Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+//		    return (Class<T>) actualTypeArguments[0];
+
+			while (parameterizedType == null) {
+				parameterizedType = (ParameterizedType) (this.getClass().getGenericSuperclass());
+			}
+
+			this.persistentClass = (Class<T>) parameterizedType.getActualTypeArguments()[0];
+		}
+	}
 
 	@PostConstruct
 	public void prepareConnection() throws MongoConnectorException {
@@ -54,7 +72,7 @@ public abstract class GenericMongoDaoImpl<T> implements GenericMongoDao<T> {
 	private MongoDatabase getDatabase(String databaseName) throws MongoConnectorException {
 		MongoDatabase database = null;
 
-		if (MongoConstants.MYDATABASE.equals(databaseName)) {
+		if (MongoConstants.ORGANIZATION.equals(databaseName)) {
 			database = myDatabase;
 		} else {
 			throw new MongoConnectorException("Database name not found");
